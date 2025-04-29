@@ -1,0 +1,25 @@
+modLoader="javafml" #mandatory
+loaderVersion="[47,)" #mandatory 
+license="MIT"
+[[mods]] #mandatory
+modId="structurespawn" #mandatory
+version="1.0.0" #mandatory
+displayName="Structure Spawn" #mandatory
+logoFile="examplemod.png" #optional
+credits="Thanks for this example mod goes to Java" #optional
+authors="Xaikii" #optional
+description='''
+Allows to adjust spawn point and spawn a Structure nearby
+'''
+[[dependencies.structurespawn]] 
+    modId="forge" #mandatory
+    mandatory=true #mandatory
+    versionRange="[47,)" #mandatory
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.structurespawn]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.20.1,)"
+    ordering="NONE"
+    side="BOTH"
