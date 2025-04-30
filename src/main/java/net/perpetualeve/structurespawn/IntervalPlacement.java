@@ -7,11 +7,16 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.core.Vec3i;
 import net.minecraft.util.ExtraCodecs;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.chunk.ChunkGeneratorStructureState;
+import net.minecraft.world.level.levelgen.LegacyRandomSource;
+import net.minecraft.world.level.levelgen.WorldgenRandom;
+import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadStructurePlacement;
+import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadType;
 import net.minecraft.world.level.levelgen.structure.placement.StructurePlacement;
 import net.minecraft.world.level.levelgen.structure.placement.StructurePlacementType;
 
-public class IntervalPlacement extends StructurePlacement {
+public class IntervalPlacement extends RandomSpreadStructurePlacement {
 
     @SuppressWarnings("deprecation")
     public static final Codec<IntervalPlacement> CODEC = RecordCodecBuilder
@@ -30,7 +35,9 @@ public class IntervalPlacement extends StructurePlacement {
 			    ExtraCodecs.NON_NEGATIVE_INT.fieldOf("interval").forGetter(IntervalPlacement::getInterval),
 			    ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("variation", 32)
 				    .forGetter(IntervalPlacement::getVariation),
-			    Codec.BOOL.optionalFieldOf("centerIncluded", false).forGetter(IntervalPlacement::center))
+			    Codec.BOOL.optionalFieldOf("centerIncluded", false).forGetter(IntervalPlacement::center),
+			    RandomSpreadType.CODEC.optionalFieldOf("spread_type", RandomSpreadType.LINEAR)
+				    .forGetter(IntervalPlacement::spreadType))
 		    .apply(instance, instance.stable(IntervalPlacement::new)));
     /**
      * The distance between attempts
@@ -44,8 +51,10 @@ public class IntervalPlacement extends StructurePlacement {
 
     @SuppressWarnings("deprecation")
     public IntervalPlacement(Vec3i pLocateOffset, FrequencyReductionMethod pFrequencyReductionMethod, float pFrequency,
-	    int pSalt, Optional<ExclusionZone> pExclusionZone, int interval, int variation, boolean centerIncluded) {
-	super(pLocateOffset, pFrequencyReductionMethod, pFrequency, pSalt, pExclusionZone);
+	    int pSalt, Optional<ExclusionZone> pExclusionZone, int interval, int variation, boolean centerIncluded,
+	    RandomSpreadType spreadType) {
+	super(pLocateOffset, pFrequencyReductionMethod, pFrequency, pSalt, pExclusionZone, interval, variation,
+		spreadType);
 	this.interval = 500;
 	this.variation = variation;
 	this.centerIncluded = centerIncluded;
@@ -65,16 +74,25 @@ public class IntervalPlacement extends StructurePlacement {
 
     @Override
     protected boolean isPlacementChunk(ChunkGeneratorStructureState pStructureState, int pX, int pZ) {
-	long xPos = (pX * 16L);
-	long zPos = (pZ * 16L);
 
-	// Here we check specifically the center
-	if (centerIncluded && withinReach(xPos) && withinReach(zPos))
+	int n = Math.floorDiv(interval, 16);
+	if (!centerIncluded && (pX < n && pX > -n) && (pZ < n && pZ > -n)) {
 	    return false;
-	if (withinReach(xPos % interval) && withinReach(zPos % interval)) {
-	    return true;
 	}
-	return false;
+
+	ChunkPos pos = getPotentialStructureChunk(this.salt(), pX, pZ);
+	return pos.x == pX && pos.z == pZ;
+    }
+
+    @Override
+    public ChunkPos getPotentialStructureChunk(long pSeed, int pRegionX, int pRegionZ) {
+	int i = Math.floorDiv(pRegionX * 16, this.spacing());
+	int j = Math.floorDiv(pRegionZ * 16, this.spacing());
+	WorldgenRandom worldgenrandom = new WorldgenRandom(new LegacyRandomSource(0L));
+	worldgenrandom.setLargeFeatureWithSalt(pSeed, i, j, this.salt());
+	int l = this.spreadType().evaluate(worldgenrandom, separation());
+	int i1 = this.spreadType().evaluate(worldgenrandom, separation());
+	return new ChunkPos(Math.floorDiv(i * this.spacing() + l, 16), Math.floorDiv(j * this.spacing() + i1, 16));
     }
 
     public boolean withinReach(long pos) {

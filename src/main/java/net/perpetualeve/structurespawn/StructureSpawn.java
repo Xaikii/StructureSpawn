@@ -21,6 +21,7 @@ import carbonconfiglib.config.MappedConfig;
 import carbonconfiglib.utils.AutomationType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.LevelAccessor;
@@ -28,10 +29,12 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.storage.ServerLevelData;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.level.LevelEvent.CreateSpawnPosition;
+import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.ForgeRegistries;
 
 @Mod(StructureSpawn.MODID)
 public class StructureSpawn {
@@ -57,7 +60,7 @@ public class StructureSpawn {
 	VALUES = new ConfigSection("Spawn Biomes");
 
 	WEIGHT = VALUES.addParsedArray("Biome Weight", BiomeWeight.createDefault(), BiomeWeight.createParser(),
-		"The weight for each Biome to be eligable to be the chosen for Spawns");
+		"The weight for each Biome to be eligable to be the chosen for Spawns. Suggestions only exist while in a World.");
 	BIOME_WEIGHT = MappedConfig.create(CONFIG, WEIGHT, (BiomeWeight obj) -> {
 	    return obj.biome;
 	}, (BiomeWeight obj) -> {
@@ -73,10 +76,18 @@ public class StructureSpawn {
 	StructurePlacements.STRUCTURE_PLACEMENTS.register(modEventBus);
 
     }
+    
+    @SubscribeEvent
+    public void serverStarted(ServerStartedEvent event) {
+	WEIGHT.clearSuggestions();
+	for (Entry<ResourceKey<Biome>, Biome> biome : ForgeRegistries.BIOMES.getEntries()) {
+	    WEIGHT.addSuggestion(new BiomeWeight(biome.getKey().location(), 100));
+	}
+	CONFIG.save();
+    }
 
     @SubscribeEvent
     public void spawnPosition(CreateSpawnPosition event) {
-
 	LOGGER.info("Starting spawn relocation");
 	long time = System.nanoTime();
 	WeightedRandom<ResourceLocation> random = new WeightedRandom<>();
