@@ -1,36 +1,17 @@
 {
   "placement": {
-    "type": "structurespawn:worldspawn",
-    "salt": 34222645,
-    "max_distance_from_world_spawn": 50
+    "type": "structurespawn:intervalspawn",
+    "exclusion_zone": {
+      "chunk_count": 10,
+      "other_set": "minecraft:villages"
+    },
+    "salt": 165745296,
+    "interval": 250,
+    "variation": 80
   },
   "structures": [
     {
-      "structure": "minecraft:ruined_portal",
-      "weight": 1
-    },
-    {
-      "structure": "minecraft:ruined_portal_desert",
-      "weight": 1
-    },
-    {
-      "structure": "minecraft:ruined_portal_jungle",
-      "weight": 1
-    },
-    {
-      "structure": "minecraft:ruined_portal_swamp",
-      "weight": 1
-    },
-    {
-      "structure": "minecraft:ruined_portal_mountain",
-      "weight": 1
-    },
-    {
-      "structure": "minecraft:ruined_portal_ocean",
-      "weight": 1
-    },
-    {
-      "structure": "minecraft:ruined_portal_nether",
+      "structure": "minecraft:pillager_outpost",
       "weight": 1
     }
   ]
