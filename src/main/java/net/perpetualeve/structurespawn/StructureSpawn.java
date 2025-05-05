@@ -28,6 +28,7 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.storage.ServerLevelData;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.event.level.LevelEvent.CreateSpawnPosition;
 import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -128,4 +129,8 @@ public class StructureSpawn {
 		.append("µs, ").append(lag).append("ns").toString();
     }
 
+    @SubscribeEvent
+    public void worldUnload(LevelEvent.Unload event) {
+    	WorldSpawnPlacement.pos = null;
+    }
 }
