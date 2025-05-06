@@ -11,4 +11,5 @@ public interface StructurePlacements {
 	    .create(Registries.STRUCTURE_PLACEMENT, StructureSpawn.MODID);
     RegistryObject<StructurePlacementType<WorldSpawnPlacement>> WORLDSPAWN_PLACEMENT = STRUCTURE_PLACEMENTS.register("worldspawn", () -> () -> WorldSpawnPlacement.CODEC);
     RegistryObject<StructurePlacementType<IntervalPlacement>> INTERVAL_PLACEMENT = STRUCTURE_PLACEMENTS.register("intervalspawn", () -> () -> IntervalPlacement.CODEC);
+    RegistryObject<StructurePlacementType<CoordinatePlacement>> COORDINATE_PLACEMENT = STRUCTURE_PLACEMENTS.register("coordinate", () -> () -> CoordinatePlacement.CODEC);
 }
