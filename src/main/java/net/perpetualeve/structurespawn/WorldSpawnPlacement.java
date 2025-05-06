@@ -18,29 +18,34 @@ import net.minecraftforge.server.ServerLifecycleHooks;
 
 public class WorldSpawnPlacement extends StructurePlacement {
 
-    public static final Codec<WorldSpawnPlacement> CODEC = ExtraCodecs.validate(MapCodec.unit(WorldSpawnPlacement::new), WorldSpawnPlacement::validate).codec();
+	public static final Codec<WorldSpawnPlacement> CODEC = ExtraCodecs.validate(MapCodec.unit(WorldSpawnPlacement::new), WorldSpawnPlacement::validate).codec();
 
-    private static DataResult<WorldSpawnPlacement> validate(WorldSpawnPlacement p_286361_) {
-        return DataResult.success(p_286361_);
-    }
+	private static DataResult<WorldSpawnPlacement> validate(WorldSpawnPlacement p_286361_) {
+		return DataResult.success(p_286361_);
+	}
 
-    public WorldSpawnPlacement() {
-        super(Vec3i.ZERO, StructurePlacement.FrequencyReductionMethod.DEFAULT, 1.0F, 1234, Optional.empty());
-    }
+	public WorldSpawnPlacement() {
+		super(Vec3i.ZERO, StructurePlacement.FrequencyReductionMethod.DEFAULT, 1.0F, 1234, Optional.empty());
+	}
 
-    public static ChunkPos pos = null;
+	public static ChunkPos pos = null;
 
-    protected boolean isPlacementChunk(ChunkGeneratorStructureState pStructureState, int pX, int pZ) {
-        if (pos == null) {
-            ServerLevelData serverData = ServerLifecycleHooks.getCurrentServer().getWorldData().overworldData();
-            pos = new ChunkPos(new BlockPos(serverData.getXSpawn(), 0, serverData.getZSpawn()));
-        }
-        return pos.x == pX && pos.z == pZ;
-    }
+	@Override
+	public boolean isStructureChunk(ChunkGeneratorStructureState pStructureState, int pX, int pZ) {
+		return this.isPlacementChunk(pStructureState, pX, pZ);
+	}
 
-    @Override
-    public StructurePlacementType<?> type() {
-	return StructurePlacements.WORLDSPAWN_PLACEMENT.get();
-    }
+	@Override
+	protected boolean isPlacementChunk(ChunkGeneratorStructureState pStructureState, int pX, int pZ) {
+		if (pos == null) {
+			ServerLevelData serverData = ServerLifecycleHooks.getCurrentServer().getWorldData().overworldData();
+			pos = new ChunkPos(new BlockPos(serverData.getXSpawn(), 0, serverData.getZSpawn()));
+		}
+		return pos.x == pX && pos.z == pZ;
+	}
 
+	@Override
+	public StructurePlacementType<?> type() {
+		return StructurePlacements.WORLDSPAWN_PLACEMENT.get();
+	}
 }
