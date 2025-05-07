@@ -75,6 +75,7 @@ public class StructureSpawn {
 	IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 	MinecraftForge.EVENT_BUS.register(this);
 	StructurePlacements.STRUCTURE_PLACEMENTS.register(modEventBus);
+	StructureTypes.STRUCTURE_TYPES.register(modEventBus);
 
     }
     
