@@ -1,0 +1,15 @@
+{
+  "structures": [
+    {
+      "structure": "example:interval_structure",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "structurespawn:intervalspawn",
+    "interval": 200,
+    "variation": 32,
+	"centerIncluded": false,
+    "salt": 1646202470
+  }
+}

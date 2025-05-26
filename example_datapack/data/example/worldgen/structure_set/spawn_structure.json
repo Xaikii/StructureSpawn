@@ -1,0 +1,11 @@
+{
+  "placement": {
+    "type": "structurespawn:worldspawn"
+  },
+  "structures": [
+    {
+      "structure": "example:spawn_structure",
+      "weight": 1
+    }
+  ]
+}

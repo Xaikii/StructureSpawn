@@ -1,0 +1,13 @@
+{
+  "structures": [
+    {
+      "structure": "example:coordinate_structure",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "structurespawn:coordinate",
+    "x": 230,
+    "z": 754
+  }
+}
