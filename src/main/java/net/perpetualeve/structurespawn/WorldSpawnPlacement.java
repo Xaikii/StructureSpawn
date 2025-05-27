@@ -18,7 +18,8 @@ import net.minecraftforge.server.ServerLifecycleHooks;
 
 public class WorldSpawnPlacement extends StructurePlacement {
 
-	public static final Codec<WorldSpawnPlacement> CODEC = ExtraCodecs.validate(MapCodec.unit(WorldSpawnPlacement::new), WorldSpawnPlacement::validate).codec();
+	public static final Codec<WorldSpawnPlacement> CODEC = ExtraCodecs
+			.validate(MapCodec.unit(WorldSpawnPlacement::new), WorldSpawnPlacement::validate).codec();
 
 	private static DataResult<WorldSpawnPlacement> validate(WorldSpawnPlacement p_286361_) {
 		return DataResult.success(p_286361_);
