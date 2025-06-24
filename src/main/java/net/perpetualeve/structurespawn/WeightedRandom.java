@@ -1,5 +1,6 @@
 package net.perpetualeve.structurespawn;
 
+import java.util.Map.Entry;
 import java.util.NavigableMap;
 import java.util.Random;
 import java.util.TreeMap;
@@ -32,7 +33,8 @@ public class WeightedRandom<E> {
 		if (map.size() == 1)
 			return map.firstEntry().getValue();
 		double value = random.nextDouble(total);
-		return map.floorEntry(value).getValue();
+		Entry<Double, E> res = map.ceilingEntry(value);
+		return res == null ? map.floorEntry(value).getValue() : res.getValue();
 	}
 
 }
